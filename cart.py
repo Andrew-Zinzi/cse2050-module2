@@ -1,5 +1,6 @@
 class ShoppingCart:
     """Represents cart customers put products into"""
+    
     def __init__(self):
         """constructor for ShoppingCart class"""
         self.items = []
@@ -37,4 +38,5 @@ class ShoppingCart:
             return False
         
     def clear(self):
+        """Remove all products from the shopping cart."""
         self.items.clear()
