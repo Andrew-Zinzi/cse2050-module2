@@ -4,6 +4,7 @@ from customer import Customer
 from product import Product
 from linked_list import LinkedList
 from stack import Stack
+from order_queue import OrderedQueue
 
 class TestOrder(unittest.TestCase):
     def test_order_creation_and_status(self):
@@ -74,6 +75,33 @@ class TestStack(unittest.TestCase):
     def test_pop_empty_stack(self):
         stack1 = Stack()
         self.assertIsNone(stack1.pop())
+        
+class TestQueue(unittest.TestCase):
+    def test_fifo_order(self):
+        OQ = OrderedQueue()
+        OQ.enqueue(1)
+        OQ.enqueue(2)
+        OQ.enqueue(3)
+        
+        self.assertEqual(OQ.dequeue(), 1)
+        self.assertEqual(OQ.dequeue(), 2)
+        self.assertEqual(OQ.dequeue(), 3)
+        
+    def test_peek(self):
+        OQ = OrderedQueue()
+        OQ.enqueue(1)
+        OQ.enqueue(2)
+        OQ.enqueue(3)
+        
+        self.assertEqual(OQ.peek(), 1)
+        
+        OQ.dequeue()
+        
+        self.assertEqual(OQ.peek(), 2)
+        
+    def test_dequeue_empty_stack(self):
+        OQ = OrderedQueue()
+        self.assertIsNone(OQ.dequeue())
         
         
 if __name__ == '__main__':
