@@ -60,7 +60,7 @@ class Store:
             return None
         
         self.order_counter += 1
-        order_id = f"{self.order_counter:02d}"
+        order_id = f"O{self.order_counter}"
         cart_items = list(customer.get_cart().get_items())                
 
         new_order = Order(order_id, customer, cart_items)
