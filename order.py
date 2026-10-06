@@ -26,6 +26,6 @@ class Order:
     def calculate_total(self):
         total = 0
         for item in self.items:
-            total += item.get_price
+            total += item.get_price()
         
         return total

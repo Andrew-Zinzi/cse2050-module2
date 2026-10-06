@@ -23,17 +23,20 @@ class LinkedList():
         else:
             self._tail.next = node
             self._tail = node
-            
-        self._len += 1
+            self._len += 1
             
     def remove_first(self):
-        if self._len == 0: return None
+        if self._head is None: 
+            return None
         
-        removed_node = self._head
+        data = self._head.data
         self._head = self._head.next
         self._len -= 1
         
-        return removed_node.data
+        if self._head is None:
+            self._tail = None
+        
+        return data
     
     def get_first(self):
         if self._len == 0: return None

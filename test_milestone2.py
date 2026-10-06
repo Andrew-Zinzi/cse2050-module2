@@ -5,6 +5,8 @@ from product import Product
 from linked_list import LinkedList
 from stack import Stack
 from order_queue import OrderedQueue
+from store import Store
+from cart import ShoppingCart
 
 class TestOrder(unittest.TestCase):
     def test_order_creation_and_status(self):
@@ -18,8 +20,12 @@ class TestOrder(unittest.TestCase):
         order1.set_status("PROCESSING")
         self.assertEqual(order1.get_status(), "PROCESSING")
         
-    # def test_cart_independence_and_total(self):
-    #     order
+    def test_cart_independence_and_total(self):
+        customer = Customer("C100", "James")
+        product = Product("P100", "Wireless Mouse", 29.99)
+        
+        order1 = Order("01", customer, [product])
+        self.assertEqual(order1.calculate_total(), 29.99)
 
 class TestLinkedList(unittest.TestCase):
     def test_add_first(self):
@@ -102,7 +108,94 @@ class TestQueue(unittest.TestCase):
     def test_dequeue_empty_stack(self):
         OQ = OrderedQueue()
         self.assertIsNone(OQ.dequeue())
+
+class TestStoreIntegration(unittest.TestCase):
+    def test_checkout(self):
+        store = Store()
         
+        mouse = Product("P100", "Wireless Mouse", 29.99)
+        keyboard = Product("P101", "Keyboard", 59.99)
+        headphones = Product("P102", "Headphones", 39.99)   
         
+        store.add_product(mouse)
+        store.add_product(keyboard)
+        store.add_product(headphones)
+
+        john = Customer("C100", "John")
+        
+        store.add_customer(john)
+        
+        john_cart = john.get_cart()
+        john_cart.add_product(keyboard)
+        john_cart.add_product(headphones)
+        john_order = store.checkout("C100")
+        
+        self.assertEqual(john_order.get_id(), "01")
+        self.assertEqual(john_order.get_customer().get_name(), "John")
+        self.assertEqual(john_order.calculate_total(), 99.98)
+        self.assertEqual(john_order.get_status(), "PENDING")
+        self.assertEqual(john_cart.is_empty(), True)
+        
+    def test_processing(self):
+        store = Store()
+                
+        mouse = Product("P100", "Wireless Mouse", 29.99)
+        keyboard = Product("P101", "Keyboard", 59.99)
+        headphones = Product("P102", "Headphones", 39.99)   
+                
+        store.add_product(mouse)
+        store.add_product(keyboard)
+        store.add_product(headphones)
+        
+        john = Customer("C100", "John")
+                
+        store.add_customer(john)
+                
+        john_cart = john.get_cart()
+        john_cart.add_product(keyboard)
+        john_cart.add_product(headphones)
+        john_order = store.checkout("C100")
+                
+        first_order = store.process_next_order()
+        self.assertEqual(first_order.get_id(), "01")
+        self.assertEqual(first_order.get_status(), "PROCESSING")
+        self.assertIsNone(store.process_next_order())
+        
+    def test_history(self):
+        store = Store()
+                
+        mouse = Product("P100", "Wireless Mouse", 29.99)
+        keyboard = Product("P101", "Keyboard", 59.99)
+        headphones = Product("P102", "Headphones", 39.99)   
+                
+        store.add_product(mouse)
+        store.add_product(keyboard)
+        store.add_product(headphones)
+        
+        john = Customer("C100", "John")
+                
+        store.add_customer(john)
+                
+        john_cart = john.get_cart()
+        john_cart.add_product(keyboard)
+        john_cart.add_product(headphones)
+        john_order = store.checkout("C100")
+        
+        bob = Customer("C101", "Bob")
+                
+        store.add_customer(bob)
+                
+        bob_cart = bob.get_cart()
+        bob_cart.add_product(keyboard)
+        bob_cart.add_product(headphones)
+        bob_order = store.checkout("C101")
+        
+        first_order = store.process_next_order()
+        second_order = store.process_next_order()
+        
+        history = store.get_order_history()
+        self.assertEqual(history[0].get_id(), "02")
+        self.assertEqual(history[1].get_id(), "01")
+
 if __name__ == '__main__':
     unittest.main()
